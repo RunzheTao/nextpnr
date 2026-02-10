@@ -13,17 +13,11 @@ BUILD_DIR="${NEXTPNR_MVP_BUILD:-${ROOT_DIR}/_build}"
 NPROCS="${NPROCS:-$(nproc)}"
 
 BACKEND="${NEXTPNR_MVP_DEPS_BACKEND:-conda}"
-CONDA_ENV_PREFIX="${NEXTPNR_MVP_CONDA_PREFIX:-${ROOT_DIR}/_conda_env/nextpnr-ice40}"
+CONDA_ENV_PREFIX="${NEXTPNR_MVP_CONDA_PREFIX:-${ROOT_DIR}/_conda_env/nextpnr}"
 CONDA_ENV_FILE="${NEXTPNR_MVP_CONDA_ENV_FILE:-${SCRIPT_DIR}/conda/environment.yml}"
 
 if [[ -z "${NEXTPNR_MVP_CONDA_PREFIX:-}" ]]; then
-    if [[ -d "${ROOT_DIR}/_conda_env/nextpnr" ]]; then
-        CONDA_ENV_PREFIX="${ROOT_DIR}/_conda_env/nextpnr"
-    elif [[ -d "${ROOT_DIR}/_conda_env/nextpnr-ice40" ]]; then
-        CONDA_ENV_PREFIX="${ROOT_DIR}/_conda_env/nextpnr-ice40"
-    else
-        CONDA_ENV_PREFIX="${ROOT_DIR}/_conda_env/nextpnr"
-    fi
+    CONDA_ENV_PREFIX="${ROOT_DIR}/_conda_env/nextpnr"
 fi
 
 CC_BIN="${CC_BIN:-/usr/bin/gcc}"

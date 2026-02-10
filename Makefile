@@ -1,15 +1,37 @@
 SHELL := /usr/bin/env bash
 
-.PHONY: bootstrap-ice40 build-ice40 test-blinky toolchain-env
+BOOTSTRAP_ARCHES := \
+	ice40 \
+	ecp5 \
+	nexus \
+	machxo2 \
+	mistral \
+	generic \
+	himbaechel-gowin \
+	himbaechel-ng-ultra \
+	himbaechel-gatemate
 
-bootstrap-ice40:
-	@./scripts/ice40/bootstrap.sh
+BOOTSTRAP_TARGETS := $(addprefix bootstrap-,$(BOOTSTRAP_ARCHES))
+BOOTSTRAP_SYSTEM_TARGETS := $(addsuffix -system,$(BOOTSTRAP_TARGETS))
 
-bootstrap-ice40-system:
-	@NEXTPNR_MVP_DEPS_BACKEND=system ./scripts/ice40/bootstrap.sh
+.PHONY: $(BOOTSTRAP_TARGETS) $(BOOTSTRAP_SYSTEM_TARGETS) \
+	bootstrap-arch-deps \
+	build-ice40 \
+	test-blinky test-blinky-system \
+	test-generic test-generic-system \
+	test-machxo2 test-machxo2-system \
+	toolchain-env toolchain-env-% deps-env
 
-build-ice40:
-	@./scripts/ice40/bootstrap.sh
+bootstrap-arch-deps:
+	@./scripts/common/install_external_deps.sh
+
+$(BOOTSTRAP_TARGETS):
+	@./scripts/$(@:bootstrap-%=%)/bootstrap.sh
+
+$(BOOTSTRAP_SYSTEM_TARGETS):
+	@NEXTPNR_MVP_DEPS_BACKEND=system ./scripts/$(@:bootstrap-%-system=%)/bootstrap.sh
+
+build-ice40: bootstrap-ice40
 
 test-blinky:
 	@./scripts/ice40/e2e_blinky.sh
@@ -17,5 +39,23 @@ test-blinky:
 test-blinky-system:
 	@NEXTPNR_MVP_DEPS_BACKEND=system ./scripts/ice40/e2e_blinky.sh
 
+test-generic:
+	@./scripts/generic/e2e_smoke.sh
+
+test-generic-system:
+	@NEXTPNR_MVP_DEPS_BACKEND=system ./scripts/generic/e2e_smoke.sh
+
+test-machxo2:
+	@./scripts/machxo2/e2e_smoke.sh
+
+test-machxo2-system:
+	@NEXTPNR_MVP_DEPS_BACKEND=system ./scripts/machxo2/e2e_smoke.sh
+
 toolchain-env:
 	@echo "Run: source ./scripts/ice40/env.sh"
+
+toolchain-env-%:
+	@echo "Run: source ./scripts/$*/env.sh"
+
+deps-env:
+	@echo "Run: source ./_deps/arch-deps.env"

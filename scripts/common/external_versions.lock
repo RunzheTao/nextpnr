@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# External architecture dependency sources pinned for local bootstrap.
+
+PRJTRELLIS_REPO="https://github.com/YosysHQ/prjtrellis.git"
+PRJTRELLIS_REF="73bd411731808d80ead650bbc9840d9e02911e9e"
+
+PRJOXIDE_REPO="https://github.com/gatecat/prjoxide.git"
+PRJOXIDE_REF="38230456c5fe0d89859d976d505a56aae3013259"
+
+MISTRAL_REPO="https://github.com/Ravenslofty/mistral.git"
+MISTRAL_REF="6a97d3e7e89d9830018904f184d4780b7bdae204"
+
+APYCULA_REPO="https://github.com/YosysHQ/apicula.git"
+APYCULA_REF="686050b5579ef00fea985bb3ae82b3e30e1e752a"
+
+PRJBEYOND_DB_REPO="https://github.com/YosysHQ-GmbH/prjbeyond-db.git"
+PRJBEYOND_DB_REF="f49f66be674d9857c657930353b867ba94bcbdd7"
+
+PRJPEPPERCORN_REPO="https://github.com/YosysHQ/prjpeppercorn.git"
+PRJPEPPERCORN_REF="ba1eca17ca6e9999828753fb671d6dab2ab4b0e3"

@@ -82,7 +82,7 @@ Build outputs:
 - Toolchain prefix: `_toolchain`
 - External source checkouts: `_deps`
 - nextpnr build directory: `_build/nextpnr-ice40`
-- Conda env prefix (default backend): `_conda_env/nextpnr-ice40`
+- Conda env prefix (default backend): `_conda_env/nextpnr` (shared across architectures)
 
 Run the end-to-end iCE40 blinky check:
 
@@ -112,6 +112,94 @@ Notes:
 - In system backend, missing Ubuntu packages are reported explicitly. You can
   auto-install them with:
   `NEXTPNR_MVP_AUTO_APT=1 NEXTPNR_MVP_DEPS_BACKEND=system make bootstrap-ice40`.
+
+### Quickstart (local bootstrap entrypoints for other architectures)
+
+If you want a one-shot installer for all architecture external dependencies
+into this repository's `_deps/` tree, run:
+
+```
+make bootstrap-arch-deps
+source _deps/arch-deps.env
+```
+
+This installs/updates Trellis, Oxide, Mistral checkout, Apycula virtualenv,
+`prjbeyond-db`, and `prjpeppercorn` under `_deps` (plus `_deps/_install` for
+install prefixes), then writes `_deps/arch-deps.env`.
+
+After installation, the architecture bootstrap scripts automatically prefer
+these local `_deps` locations. Sourcing `_deps/arch-deps.env` is still
+recommended when you want explicit and inspectable environment overrides.
+
+This fork also provides local bootstrap entrypoints for the other README
+architectures (out-of-tree builds under `_build/nextpnr-<arch>`):
+
+```
+make bootstrap-ecp5
+make bootstrap-nexus
+make bootstrap-machxo2
+make bootstrap-mistral
+make bootstrap-generic
+make bootstrap-himbaechel-gowin
+make bootstrap-himbaechel-ng-ultra
+make bootstrap-himbaechel-gatemate
+```
+
+System backend variants are available for every architecture:
+
+```
+make bootstrap-ecp5-system
+make bootstrap-nexus-system
+make bootstrap-machxo2-system
+make bootstrap-mistral-system
+make bootstrap-generic-system
+make bootstrap-himbaechel-gowin-system
+make bootstrap-himbaechel-ng-ultra-system
+make bootstrap-himbaechel-gatemate-system
+```
+
+Smoke tests are provided only where this repository has runnable local examples:
+
+```
+make test-generic
+make test-machxo2
+```
+
+Architecture matrix (implemented in `scripts/common/arch_matrix.sh`):
+
+| Arch key | External dependency | CMake args | E2E in this repo | Experimental |
+| --- | --- | --- | --- | --- |
+| `ecp5` | Project Trellis | `-DARCH=ecp5 -DTRELLIS_INSTALL_PREFIX=...` | no local example | no |
+| `nexus` | Project Oxide (`prjoxide`) | `-DARCH=nexus -DOXIDE_INSTALL_PREFIX=...` | no local example | yes |
+| `machxo2` | Project Trellis | `-DARCH=machxo2 -DTRELLIS_INSTALL_PREFIX=...` | `make test-machxo2` | yes |
+| `mistral` | Mistral checkout + `liblzma` | `-DARCH=mistral -DMISTRAL_ROOT=...` | no local example | yes |
+| `generic` | none | `-DARCH=generic` | `make test-generic` | yes |
+| `himbaechel-gowin` | Apycula (`apycula`) | `-DARCH=himbaechel -DHIMBAECHEL_UARCH=gowin` | no local example | yes |
+| `himbaechel-ng-ultra` | `prjbeyond-db` checkout | `-DARCH=himbaechel -DHIMBAECHEL_UARCH=ng-ultra -DHIMBAECHEL_PRJBEYOND_DB=...` | no local example | yes |
+| `himbaechel-gatemate` | `prjpeppercorn` checkout | `-DARCH=himbaechel -DHIMBAECHEL_UARCH=gatemate -DHIMBAECHEL_PEPPERCORN_PATH=...` | no local example | yes |
+
+For dependency-heavy architectures, bootstrap now fails fast with explicit
+environment-variable hints (no silent skip). Key variables:
+
+- `TRELLIS_INSTALL_PREFIX` (or `TRELLIS_LIBDIR` / `TRELLIS_DATADIR`) for `ecp5` / `machxo2`
+- `TRELLIS_PYTHON_EXECUTABLE` if `pytrellis` Python ABI needs an explicit match
+- `OXIDE_INSTALL_PREFIX` for `nexus`
+- `MISTRAL_ROOT` for `mistral`
+- `APYCULA_INSTALL_PREFIX` (optional, if not using default Python env) for `himbaechel-gowin`
+- `HIMBAECHEL_PRJBEYOND_DB` for `himbaechel-ng-ultra`
+- `HIMBAECHEL_PEPPERCORN_PATH` for `himbaechel-gatemate`
+
+All these scripts share a common framework in `scripts/common/`:
+
+- `bootstrap_arch.sh`: common prerequisite checks + configure/build flow
+- `arch_matrix.sh`: per-architecture dependency/CMake/e2e/experimental matrix
+- `env_arch.sh`: shared `env.sh` logic
+
+If you only want to validate CMake configure without building:
+
+```
+NEXTPNR_MVP_CONFIGURE_ONLY=1 make bootstrap-generic-system
+```
 
 ### nextpnr-ice40
 

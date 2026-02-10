@@ -7,13 +7,7 @@ ROOT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 export NEXTPNR_MVP_TOOLCHAIN="${NEXTPNR_MVP_TOOLCHAIN:-${ROOT_DIR}/_toolchain}"
 if [[ -z "${NEXTPNR_MVP_CONDA_PREFIX:-}" ]]; then
-    if [[ -d "${ROOT_DIR}/_conda_env/nextpnr" ]]; then
-        export NEXTPNR_MVP_CONDA_PREFIX="${ROOT_DIR}/_conda_env/nextpnr"
-    elif [[ -d "${ROOT_DIR}/_conda_env/nextpnr-ice40" ]]; then
-        export NEXTPNR_MVP_CONDA_PREFIX="${ROOT_DIR}/_conda_env/nextpnr-ice40"
-    else
-        export NEXTPNR_MVP_CONDA_PREFIX="${ROOT_DIR}/_conda_env/nextpnr"
-    fi
+    export NEXTPNR_MVP_CONDA_PREFIX="${ROOT_DIR}/_conda_env/nextpnr"
 fi
 export PATH="${NEXTPNR_MVP_TOOLCHAIN}/bin:${PATH}"
 
