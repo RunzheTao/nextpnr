@@ -10,3 +10,6 @@
 [submodule "3rdparty/googletest"]
 	path = 3rdparty/googletest
 	url = https://github.com/google/googletest.git
+[submodule "3rdparty/OpenPARF"]
+	path = 3rdparty/OpenPARF
+	url = https://github.com/RunzheTao/OpenPARF.git
