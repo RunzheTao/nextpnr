@@ -9,6 +9,7 @@
 .cache
 cmake-build-*/
 Makefile
+!/Makefile
 cmake_install.cmake
 compile_commands.json
 CMakeFiles
@@ -27,6 +28,7 @@ a.out
 *.il
 /generic/examples/blinky.png
 build/
+build-*/
 share/
 *.asc
 *.bin
@@ -36,6 +38,10 @@ install_manifest.txt
 /bba/bbasm
 /bba-export.cmake
 /ImportExecutables.cmake
+/_deps/
+/_build/
+/_toolchain/
+/_conda_env/
 *-coverage/
 *-coverage.info
 *.netlist

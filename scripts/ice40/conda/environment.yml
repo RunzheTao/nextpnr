@@ -1,0 +1,20 @@
+name: nextpnr
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - cmake
+  - make
+  - pkg-config
+  - bison
+  - flex
+  - gawk
+  - tk
+  - zlib
+  - libffi
+  - readline
+  - compilers
+  - boost-cpp
+  - eigen
+  - libusb
+  - libftdi

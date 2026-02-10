@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Dependency versions pinned for local iCE40 bootstrap MVP.
+
+ICESTORM_REPO="https://github.com/YosysHQ/icestorm.git"
+ICESTORM_REF="f31c39cc2eadd0ab7f29f34becba1348ae9f8721"
+
+YOSYS_REPO="https://github.com/YosysHQ/yosys.git"
+YOSYS_REF="a6e33d99161d9fe0be662b51de376bfa3227e311"

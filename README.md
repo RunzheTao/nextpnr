@@ -61,6 +61,58 @@ First of all, run:
 git submodule update --init --recursive
 ```
 
+### Quickstart (Ubuntu, iCE40 MVP automation)
+
+This fork includes a local bootstrap flow that builds IceStorm, Yosys, and
+`nextpnr-ice40` into project-local directories (no `/usr/local` install needed):
+
+```
+make bootstrap-ice40
+```
+
+By default, this flow uses a project-local Conda environment (recommended for
+cross-distro portability). To force system-package mode instead:
+
+```
+make bootstrap-ice40-system
+```
+
+Build outputs:
+
+- Toolchain prefix: `_toolchain`
+- External source checkouts: `_deps`
+- nextpnr build directory: `_build/nextpnr-ice40`
+- Conda env prefix (default backend): `_conda_env/nextpnr-ice40`
+
+Run the end-to-end iCE40 blinky check:
+
+```
+make test-blinky
+```
+
+System backend test:
+
+```
+make test-blinky-system
+```
+
+If you want the local tools on `PATH` in the current shell:
+
+```
+source scripts/ice40/env.sh
+```
+
+Notes:
+
+- The bootstrap script is `scripts/ice40/bootstrap.sh`.
+- Dependency versions are pinned in `scripts/ice40/versions.lock`.
+- Conda backend environment file: `scripts/ice40/conda/environment.yml`.
+- If `libftdi` is unavailable in the selected backend, IceStorm falls back to
+  `ICEPROG=0` (PnR still works).
+- In system backend, missing Ubuntu packages are reported explicitly. You can
+  auto-install them with:
+  `NEXTPNR_MVP_AUTO_APT=1 NEXTPNR_MVP_DEPS_BACKEND=system make bootstrap-ice40`.
+
 ### nextpnr-ice40
 
 For iCE40 support, install [Project IceStorm](https://github.com/YosysHQ/icestorm) to `/usr/local` or another location, which should be passed as `-DICESTORM_INSTALL_PREFIX=/usr` to CMake. Then build and install `nextpnr-ice40` using the following commands:
