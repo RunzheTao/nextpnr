@@ -136,6 +136,7 @@ architectures (out-of-tree builds under `_build/nextpnr-<arch>`):
 
 ```
 make bootstrap-ecp5
+make bootstrap-ecp5-python
 make bootstrap-nexus
 make bootstrap-machxo2
 make bootstrap-mistral
@@ -149,6 +150,7 @@ System backend variants are available for every architecture:
 
 ```
 make bootstrap-ecp5-system
+make bootstrap-ecp5-python-system
 make bootstrap-nexus-system
 make bootstrap-machxo2-system
 make bootstrap-mistral-system
@@ -193,6 +195,12 @@ Prerequisites:
 - Yosys is available (default path: `_toolchain/bin/yosys`, override with `YOSYS_BIN=...`)
 - `python/export_bookshelf_prepack.py` exists
 
+If your default ECP5 build has no `--run`, bootstrap a Python-enabled binary:
+
+```
+make bootstrap-ecp5-python
+```
+
 Default outputs:
 
 - Shared benchmark root: `_bench/ecp5_unified`
@@ -220,6 +228,11 @@ Failure hints:
   - `NEXTPNR_BOOKSHELF_TOP=...`
   - `NEXTPNR_BOOKSHELF_NETLIST=...`
   - `NEXTPNR_BOOKSHELF_OUT_ROOT=...`
+- To clean generated unified benchmark outputs/logs:
+
+```
+make clean-bench
+```
 
 Architecture matrix (implemented in `scripts/common/arch_matrix.sh`):
 

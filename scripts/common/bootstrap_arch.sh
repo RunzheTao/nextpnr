@@ -316,11 +316,24 @@ configure_nextpnr() {
         fi
     fi
 
+    local build_python_cmake="OFF"
+    case "${BUILD_PYTHON}" in
+        1|ON|on|TRUE|true|YES|yes)
+            build_python_cmake="ON"
+            ;;
+        0|OFF|off|FALSE|false|NO|no|"")
+            build_python_cmake="OFF"
+            ;;
+        *)
+            die "NEXTPNR_MVP_BUILD_PYTHON must be one of: 0,1,ON,OFF,TRUE,FALSE,YES,NO (got '${BUILD_PYTHON}')"
+            ;;
+    esac
+
     local cmake_args=(
         "${ROOT_DIR}"
         "-DCMAKE_CXX_COMPILER=${CXX_BIN}"
         "-DBUILD_GUI=OFF"
-        "-DBUILD_PYTHON=OFF"
+        "-DBUILD_PYTHON=${build_python_cmake}"
     )
 
     cmake_args+=("${NEXTPNR_ARCH_CMAKE_ARGS[@]}")
@@ -343,6 +356,7 @@ print_summary() {
     if [[ "${BACKEND}" == "conda" ]]; then
         echo "[bootstrap] CONDA_ENV_PREFIX=${CONDA_ENV_PREFIX}"
     fi
+    echo "[bootstrap] BUILD_PYTHON=${BUILD_PYTHON}"
     echo "[bootstrap] Export environment with:"
     echo "  source scripts/${NEXTPNR_ARCH_KEY}/env.sh"
     if [[ -n "${NEXTPNR_ARCH_E2E_SCRIPT}" ]]; then
@@ -359,6 +373,7 @@ Environment:
   NEXTPNR_MVP_ARCH             Architecture key (required)
   NEXTPNR_MVP_DEPS_BACKEND     conda|system (default: conda)
   NEXTPNR_MVP_CONDA_ENV_FILE   Conda environment file for backend=conda
+  NEXTPNR_MVP_BUILD_PYTHON     1/ON to enable Python hooks (--run support), default: 0
   NEXTPNR_MVP_CONFIGURE_ONLY   1 to skip cmake --build
 USAGE
 }
@@ -411,6 +426,7 @@ main() {
     CONDA_ENV_FILE="${NEXTPNR_MVP_CONDA_ENV_FILE:-${ROOT_DIR}/scripts/ice40/conda/environment.yml}"
 
     CONFIGURE_ONLY="${NEXTPNR_MVP_CONFIGURE_ONLY:-0}"
+    BUILD_PYTHON="${NEXTPNR_MVP_BUILD_PYTHON:-0}"
 
     CC_BIN="${CC_BIN:-/usr/bin/gcc}"
     CXX_BIN="${CXX_BIN:-/usr/bin/g++}"

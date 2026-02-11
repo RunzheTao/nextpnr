@@ -16,11 +16,13 @@ BOOTSTRAP_SYSTEM_TARGETS := $(addsuffix -system,$(BOOTSTRAP_TARGETS))
 
 .PHONY: $(BOOTSTRAP_TARGETS) $(BOOTSTRAP_SYSTEM_TARGETS) \
 	bootstrap-arch-deps \
+	bootstrap-ecp5-python bootstrap-ecp5-python-system \
 	build-ice40 \
 	test-blinky test-blinky-system \
 	test-ecp5-bookshelf test-ecp5-bookshelf-system \
 	test-generic test-generic-system \
 	test-machxo2 test-machxo2-system \
+	clean-bench \
 	toolchain-env toolchain-env-% deps-env
 
 bootstrap-arch-deps:
@@ -31,6 +33,12 @@ $(BOOTSTRAP_TARGETS):
 
 $(BOOTSTRAP_SYSTEM_TARGETS):
 	@NEXTPNR_MVP_DEPS_BACKEND=system ./scripts/$(@:bootstrap-%-system=%)/bootstrap.sh
+
+bootstrap-ecp5-python:
+	@NEXTPNR_MVP_BUILD_PYTHON=1 ./scripts/ecp5/bootstrap.sh
+
+bootstrap-ecp5-python-system:
+	@NEXTPNR_MVP_DEPS_BACKEND=system NEXTPNR_MVP_BUILD_PYTHON=1 ./scripts/ecp5/bootstrap.sh
 
 build-ice40: bootstrap-ice40
 
@@ -57,6 +65,10 @@ test-machxo2:
 
 test-machxo2-system:
 	@NEXTPNR_MVP_DEPS_BACKEND=system ./scripts/machxo2/e2e_smoke.sh
+
+clean-bench:
+	@rm -rf ./_bench/ecp5_unified/out
+	@rm -f ./_bench/ecp5_unified/synth.log ./_bench/ecp5_unified/netlist.sha256 ./_bench/ecp5_unified/unified_bench.json
 
 toolchain-env:
 	@echo "Run: source ./scripts/ice40/env.sh"
