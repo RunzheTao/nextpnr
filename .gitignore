@@ -42,6 +42,7 @@ install_manifest.txt
 /_build/
 /_toolchain/
 /_conda_env/
+/_bench/
 *-coverage/
 *-coverage.info
 *.netlist

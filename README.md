@@ -165,6 +165,62 @@ make test-generic
 make test-machxo2
 ```
 
+### Quickstart (ECP5 unified pre-pack Bookshelf export)
+
+This branch includes a one-shot ECP5 unified export/check flow for the same
+shared netlist across three device sizes:
+
+- `LFE5U-12F` (`--12k`)
+- `LFE5U-45F` (`--45k`)
+- `LFE5U-85F` (`--85k`)
+
+Run:
+
+```
+make test-ecp5-bookshelf
+```
+
+System backend variant:
+
+```
+make test-ecp5-bookshelf-system
+```
+
+Prerequisites:
+
+- `nextpnr-ecp5` is built with Python hook support (`--run` option, usually `-DBUILD_PYTHON=ON`)
+  (default path: `_build/nextpnr-ecp5/nextpnr-ecp5`)
+- Yosys is available (default path: `_toolchain/bin/yosys`, override with `YOSYS_BIN=...`)
+- `python/export_bookshelf_prepack.py` exists
+
+Default outputs:
+
+- Shared benchmark root: `_bench/ecp5_unified`
+- Shared netlist: `_bench/ecp5_unified/unified_bench.json`
+- Per-device export directories:
+  - `_bench/ecp5_unified/out/LFE5U-12F`
+  - `_bench/ecp5_unified/out/LFE5U-45F`
+  - `_bench/ecp5_unified/out/LFE5U-85F`
+- Per-device run log: `<out>/<device>/export.log`
+
+Checks performed automatically:
+
+- required file completeness (`.aux/.lib/.nodes/.nets/.pl/.scl/.wts/.name_map.json/_openparf.json`)
+- internal count consistency (`instances`, `nets`, `pin_refs`)
+- cross-device invariants (`instances`, `nets`, `pin_refs`, and sha256 of `.nodes/.nets/.lib/.name_map.json`)
+- `name_map` reversibility (`orig_to_safe` and `safe_to_orig`)
+
+Failure hints:
+
+- The summary prints per-device `passed` or `blocked(reason)`.
+- For run-time/export failures, inspect `<out>/<device>/export.log`.
+- If `--run` is unsupported, rebuild ECP5 with `-DBUILD_PYTHON=ON` or point `NEXTPNR_BIN` to a Python-enabled binary.
+- For custom flows, override inputs with:
+  - `NEXTPNR_BOOKSHELF_RTL=...`
+  - `NEXTPNR_BOOKSHELF_TOP=...`
+  - `NEXTPNR_BOOKSHELF_NETLIST=...`
+  - `NEXTPNR_BOOKSHELF_OUT_ROOT=...`
+
 Architecture matrix (implemented in `scripts/common/arch_matrix.sh`):
 
 | Arch key | External dependency | CMake args | E2E in this repo | Experimental |

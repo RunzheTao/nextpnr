@@ -18,6 +18,7 @@ BOOTSTRAP_SYSTEM_TARGETS := $(addsuffix -system,$(BOOTSTRAP_TARGETS))
 	bootstrap-arch-deps \
 	build-ice40 \
 	test-blinky test-blinky-system \
+	test-ecp5-bookshelf test-ecp5-bookshelf-system \
 	test-generic test-generic-system \
 	test-machxo2 test-machxo2-system \
 	toolchain-env toolchain-env-% deps-env
@@ -38,6 +39,12 @@ test-blinky:
 
 test-blinky-system:
 	@NEXTPNR_MVP_DEPS_BACKEND=system ./scripts/ice40/e2e_blinky.sh
+
+test-ecp5-bookshelf:
+	@./scripts/ecp5/e2e_bookshelf_unified.sh
+
+test-ecp5-bookshelf-system:
+	@NEXTPNR_MVP_DEPS_BACKEND=system ./scripts/ecp5/e2e_bookshelf_unified.sh
 
 test-generic:
 	@./scripts/generic/e2e_smoke.sh
